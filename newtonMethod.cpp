@@ -10,7 +10,8 @@ double EvalNewton(double[],double[],float);
 
 // driver method
 int main(int argc, char** argv){
-
+    
+    
     // command line arguments
     if(string(argv[1]).find(".pnt")!=string::npos){
 
