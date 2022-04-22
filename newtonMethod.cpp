@@ -1,52 +1,80 @@
-#include<iostream>
-#include<vector>
+#include <iostream>
+#include <string>
+#include <fstream> // file library
 using namespace std;
 
-int n = 5;
+int n;
 // method declaration
-void Coeff(vector<double>,vector<double>,vector<double>);
-double EvalNewton(vector<double>,vector<double>,float);
+void Coeff(double[],double[],double[]);
+double EvalNewton(double[],double[],float);
 
 // driver method
-int main(){
-    // Create an empty coefficient vector
-    vector<double> cs;
-    vector<double> xs;
-    vector<double> ys;
-    float z;
+int main(int argc, char** argv){
+
+    // command line arguments
+    if(string(argv[1]).find(".pnt")!=string::npos){
+
+        ifstream file; // call read file function
     
-    xs.push_back(3);
-    xs.push_back(1);
-    xs.push_back(0);
-    xs.push_back(4);
-    xs.push_back(7);
+        file.open(argv[1]);
+        double x;
+        while(file>>x){
+            n++;
+        }
+        file.close();
 
-    ys.push_back(1);
-    ys.push_back(0.12);
-    ys.push_back(-0.3);
-    ys.push_back(2);
-    ys.push_back(2.5);
+        n/=2;
+    
+        // Create an empty coefficient vector and initialize arrays and variables
+        double cs[n],xs[n],ys[n];
+        float z;
+        
+        int counter = 0;
 
-    Coeff(xs,ys,cs);
-    EvalNewton(xs,cs,z);
+        file.open(argv[1]);
+        double y;
+        for(int i = 0; i < n; i++){
+            
+            file >> y;
+            xs[counter] = y;
+            counter++;
+        }
+        
+        counter = 0;
+        for(int i = n; i < n*2; i++){
+            
+            file >> y;
+            ys[counter] = y;
+            counter++;
+        }
+        file.close();
+
+        cout << "Please enter the point to be evaluated at: x = ";
+        cin >> z;
+        
+        Coeff(xs,ys,cs);
+        
+        cout << "f(" << z << ") = " << EvalNewton(xs,cs,z);
+    }
+    
 }
 
-void Coeff(vector<double> xs,vector<double> ys, vector<double> cs){
-    for(int i = 0; i <n;i++){
+void Coeff(double xs[n+1] , double ys[n+1], double cs[n+1]){
+    for(int i = 0; i <=n;i++){
         cs[i] = ys[i];
     }
 
-    for(int j = 1; j < n; j++){
+    for(int j = 1; j <= n; j++){
         for(int i = n; i >= j; i--){
             cs[i] = (cs[i]-cs[i-1])/(xs[i]-xs[i-j]);
         }
     }
 }
 
-double EvalNewton(vector<double> xs, vector<double> cs, float z){
-    double result = cs[n];
+double EvalNewton(double xs[n+1], double cs[n+1] , float z){
+    double result = cs[n-1];
 
-    for(int i = n-1; i >= 0; i--){
+    for(int i = n-2; i >= 0; i--){
         result = result *(z-xs[i])+cs[i];
     }
 
